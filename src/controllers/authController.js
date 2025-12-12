@@ -3,6 +3,7 @@
 import User from "../models/User.js";
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import stripe from '../config/stripe.js';
 
 export const signup = async (req, res) => {
     try {
@@ -15,10 +16,18 @@ export const signup = async (req, res) => {
 
         const hashedPassword = await bcrypt.hash(password, 10);
 
+        //Creting a stripe customer
+
+        const customer = await stripe.customers.create({
+            name,
+            email,
+        });
+
         const user = await User.create({
             name,
             email,
             password: hashedPassword,
+            stripeCustomerId: customer.id
         });
 
         return res.status(201).json({
@@ -26,6 +35,7 @@ export const signup = async (req, res) => {
             user: {
                 id: user._id,
                 email: user.email,
+                stripeCustomerId: user.stripeCustomerId
             },
         });
     } catch (err) {
@@ -59,7 +69,7 @@ export const login = async (req, res) => {
             message: "Login Successful",
             token,
             user: {
-                id: user._id, 
+                id: user._id,
                 email: user.email,
             }
         });
