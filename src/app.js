@@ -6,6 +6,7 @@ import dotenv from 'dotenv';
 import connectDB from "./config/db.js";
 import authRoutes from './routes/authRoutes.js';
 import planRoutes from "./routes/planRoutes.js";
+import subscriptionRoutes from './routes/subscriptionRoutes.js';
 
 dotenv.config();
 connectDB();
@@ -18,6 +19,7 @@ app.use(express.json());
 app.use(morgan("dev"));
 app.use("/api/auth", authRoutes);
 app.use("/api/plans", planRoutes);
+app.use("/api/subscription", subscriptionRoutes);
 
 //health route
 app.get("/health", (req, res) => {
