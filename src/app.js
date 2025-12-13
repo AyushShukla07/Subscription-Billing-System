@@ -5,6 +5,7 @@ import morgan from 'morgan';
 import dotenv from 'dotenv';
 import connectDB from "./config/db.js";
 import authRoutes from './routes/authRoutes.js';
+import planRoutes from "./routes/planRoutes.js";
 
 dotenv.config();
 connectDB();
@@ -16,6 +17,7 @@ app.use(helmet());
 app.use(express.json());
 app.use(morgan("dev"));
 app.use("/api/auth", authRoutes);
+app.use("/api/plans", planRoutes);
 
 //health route
 app.get("/health", (req, res) => {
