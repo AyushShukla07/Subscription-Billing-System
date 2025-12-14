@@ -25,6 +25,7 @@ const userSchema = new mongoose.Schema({
         status: { type: String, default: "inactive" },
         startDate: { type: Date },
         endDate: { type: Date },
+        stripeSubscriptionId: { type: String }
     }
 }, { timestamps: true });
 
