@@ -9,23 +9,24 @@ import planRoutes from "./routes/planRoutes.js";
 import subscriptionRoutes from './routes/subscriptionRoutes.js';
 import bodyParser from 'body-parser';
 import webhookRoutes from './routes/webhookRoutes.js';
+import refundRoutes from './routes/refundRoutes.js';
 
 dotenv.config();
 connectDB();
 
 const app = express();
 
-app.use(cors());
-app.use(helmet());
-app.use(morgan("dev"));
-
 app.use("/api/webhook", bodyParser.raw({ type: "application/json" }), webhookRoutes);
 
+app.use(cors());
+app.use(helmet());
 app.use(express.json());
+app.use(morgan("dev"));
 
 app.use("/api/auth", authRoutes);
 app.use("/api/plans", planRoutes);
 app.use("/api/subscription", subscriptionRoutes);
+app.use("/api/refund", refundRoutes);
 
 
 //health route
