@@ -41,3 +41,29 @@ export const createCheckoutSession = async (req, res) => {
         res.status(500).json({ message: 'Server error' });
     }
 };
+
+export const cancelSubscription = async (req, res) => {
+    try {
+        const user = await User.findById(req.user.id);
+
+        if (!user?.subscription?.stripeSubscriptionId) {
+            return res.status(400).json({ message: "No active subscription" });
+        }
+
+        const subscription = await stripe.subscriptions.update(
+            user.subscription.stripeSubscriptionId,
+            { cancel_at_period_end: true }
+        );
+
+        user.subscription.status = "cancelled";
+        user.subscription.endDate = new Date(subscription.current_period_end * 1000);
+        await user.save();
+
+        res.json({
+            message: "Subscription will cancel at period end",
+            endDate: user.subscription.endDate
+        });
+    } catch (error) {
+        res.status(500).json({ message: "Cancellation failed" });
+    }
+};

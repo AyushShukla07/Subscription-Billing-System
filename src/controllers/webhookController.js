@@ -78,23 +78,43 @@ export const stripeWebhook = async (req, res) => {
             case "invoice.payment_failed": {
                 const invoice = event.data.object;
 
-                const user = await User.findOne({ stripeCustomerId: invoice.customer, }); if (!user) break;
+                // const user = await User.findOne({ stripeCustomerId: invoice.customer, }); if (!user) break;
 
-                await Payment.create({
-                    userId: user._id,
-                    stripeInvoiceId: invoice.id,
-                    amount: invoice.amount_due / 100,
-                    currency: invoice.currency,
-                    status: "failed",
-                });
+                // await Payment.create({
+                //     userId: user._id,
+                //     stripeInvoiceId: invoice.id,
+                //     amount: invoice.amount_due / 100,
+                //     currency: invoice.currency,
+                //     status: "failed",
+                // });
 
-                console.log('Payment Failed for invoice: ', invoice.id);
+                await User.findOneAndUpdate(
+                    {
+                        stripeCustomerId: invoice.customer
+                    },
+                    {
+                        "subscription.status": "past_due",
+                        "subscription.gracePeriodEnd": new Date(Date.now() + 3 * 24 * 60 * 60 * 1000)
+                    }
+                );
 
+                console.log("Subscription in grace period");
                 break;
             }
             case "customer.subscription.deleted": {
-                const subscription = event.data.object;
-                console.log('Subscription cancelled: ', subscription.id);
+                const sub = event.data.object;
+
+                await User.findOneAndUpdate(
+                    {
+                        "subscription.stripeSubscriptionId": sub.id
+                    },
+                    {
+                        "subscription.status": "expired",
+                        "subscription.endDate": new Date(sub.ended_at * 1000)
+                    }
+                );
+
+                console.log('Subscription expired: ', sub.id);
                 break;
             }
             case "charge.refunded": {

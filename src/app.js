@@ -10,6 +10,7 @@ import subscriptionRoutes from './routes/subscriptionRoutes.js';
 import bodyParser from 'body-parser';
 import webhookRoutes from './routes/webhookRoutes.js';
 import refundRoutes from './routes/refundRoutes.js';
+import premiumRoutes from './routes/premiumRoutes.js';
 
 dotenv.config();
 connectDB();
@@ -27,6 +28,8 @@ app.use("/api/auth", authRoutes);
 app.use("/api/plans", planRoutes);
 app.use("/api/subscription", subscriptionRoutes);
 app.use("/api/refund", refundRoutes);
+app.use("/api/subscription", subscriptionRoutes);
+app.use("/api/premium-content", premiumRoutes);
 
 
 //health route

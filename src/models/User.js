@@ -21,11 +21,16 @@ const userSchema = new mongoose.Schema({
         fefault: null,
     },
     subscription: {
-        planId: { type: String, default: null },
-        status: { type: String, default: "inactive" },
-        startDate: { type: Date },
-        endDate: { type: Date },
-        stripeSubscriptionId: { type: String }
+        planId: String,
+        status: {
+            type: String,
+            enum: ["active", "past_due", "cancelled", "expired"],
+            default: "active"
+        },
+        startDate: Date,
+        endDate: Date,
+        stripeSubscriptionId: String,
+        gracePeriodEnd: Date
     }
 }, { timestamps: true });
 
