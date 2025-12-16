@@ -28,7 +28,6 @@ app.use("/api/auth", authRoutes);
 app.use("/api/plans", planRoutes);
 app.use("/api/subscription", subscriptionRoutes);
 app.use("/api/refund", refundRoutes);
-app.use("/api/subscription", subscriptionRoutes);
 app.use("/api/premium-content", premiumRoutes);
 
 

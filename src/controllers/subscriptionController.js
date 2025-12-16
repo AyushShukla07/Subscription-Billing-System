@@ -44,7 +44,7 @@ export const createCheckoutSession = async (req, res) => {
 
 export const cancelSubscription = async (req, res) => {
     try {
-        const user = await User.findById(req.user.id);
+        const user = await User.findById(req.user.userId);
 
         if (!user?.subscription?.stripeSubscriptionId) {
             return res.status(400).json({ message: "No active subscription" });
@@ -55,7 +55,7 @@ export const cancelSubscription = async (req, res) => {
             { cancel_at_period_end: true }
         );
 
-        user.subscription.status = "cancelled";
+        user.subscription.status = "cancel_pending";
         user.subscription.endDate = new Date(subscription.current_period_end * 1000);
         await user.save();
 

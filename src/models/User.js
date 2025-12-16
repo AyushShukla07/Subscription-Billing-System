@@ -18,14 +18,14 @@ const userSchema = new mongoose.Schema({
     },
     stripeCustomerId: {
         type: String,
-        fefault: null,
+        default: null,
     },
     subscription: {
         planId: String,
         status: {
             type: String,
             enum: ["active", "past_due", "cancelled", "expired"],
-            default: "active"
+            default: "expired"
         },
         startDate: Date,
         endDate: Date,

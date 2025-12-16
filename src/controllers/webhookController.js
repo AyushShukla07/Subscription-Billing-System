@@ -43,8 +43,7 @@ export const stripeWebhook = async (req, res) => {
                 console.log("Subscription activated for user:", userId);
                 break;
             }
-            case "invoice.payment_succeeded":
-            case "invoice.paid": {
+            case "invoice.payment_succeeded":{
                 const invoice = event.data.object;
 
                 const user = await User.findOne({
@@ -59,6 +58,10 @@ export const stripeWebhook = async (req, res) => {
                     const paymentIntent = await stripe.paymentIntents.retrieve(invoice.payment_intent);
                     stripeChargeId = paymentIntent.latest_charge;
                 }
+
+                const existingPayment=await Payment.findOne({ stripeInvoiceId: invoice.id });
+
+                if(existingPayment) break;
 
                 await Payment.create({
                     userId: user._id,
